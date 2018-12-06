@@ -31,11 +31,6 @@ swapoff -a
 sudo setenforce 0
 sudo sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/selinux/config
 
-#sudo yum install -y docker
-sudo yum install -y docker-1.13.1-75.git8633870.el7.centos
-sudo systemctl enable docker.service
-sudo service docker start
-
 sudo bash -c 'cat > /etc/yum.repos.d/kubernetes.repo' << EOF
 [kubernetes]
 name=Kubernetes
@@ -48,6 +43,11 @@ gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg
 EOF
 
 sudo yum update -y
+
+sudo yum install -y docker-1.13.1-75.git8633870.el7.centos
+sudo systemctl enable docker.service
+sudo service docker start
+
 sudo yum install -y kubelet-1.10.4-0 kubeadm-1.10.4-0 kubectl-1.10.4-0
 
 sudo sed -i 's|Environment="KUBELET_NETWORK_ARGS=--network-plugin=cni --cni-conf-dir=/etc/cni/net.d --cni-bin-dir=/opt/cni/bin"|#Environment="KUBELET_NETWORK_ARGS=--network-plugin=cni --cni-conf-dir=/etc/cni/net.d --cni-bin-dir=/opt/cni/bin"|g' /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
