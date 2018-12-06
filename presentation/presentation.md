@@ -33,4 +33,41 @@ Tungsten Fabric (TF) aligns well with our mission and vision in enabling organiz
 
 ## Tungsten Fabric + Kubernetes
 
-I personally feel that leveraging Tungsten Fabric as a CNI for Kubernetes is a powerful combination.  
+Leveraging Tungsten Fabric as a CNI for Kubernetes is a powerful combination, enabling network policies and the ability to extend the Kubernetes networking into other regions or underlay networks.
+
+<div class="center-text"><img src="./img/tf.png" style="margin-right:40px; width:380px; padding-bottom:10px;"><img src="./img/kubernetes.png"></div>
+
+---
+
+## Let the journey begin...
+
+It turns out that getting Kubernetes and Tungsten Fabric to work together is not trivial, so we wanted to give a little summary of our findings.
+
+The [Deploy Tungsten Fabric on Kubernetes in 1-step command](https://github.com/tungstenfabric/website/blob/master/Tungsten-Fabric-one-line-install-on-k8s.md) tutorial is very useful, but we still ran into these issues.
+
+- We needed the kernel version `3.10.0-862.14.4` instead of `3.10.0-862.3.2`.
+- We needed 32GB of RAM and 50GB of disk on the Kubernetes master to have enough resources.
+
+After we are back from KubeCon, I will open a PR to improve the documentation in these areas.
+
+---
+
+## The journey continues...
+
+We also ran into these challenges when deploying Kubernetes and TF together:
+
+- We needed to change the `VROUTER_GATEWAY` variable in the helm chart to be the gateway of the underlay network and not the master IP (which is what is documented), otherwise when TF came up, we would lose network access to the master node.
+- We needed to pin the Kubernetes version to `1.10.4`, as version `1.12` does not seem to be supported yet.
+- We needed to pin a specific version of `docker` to use in order for everything to come up correctly.
+
+At this point, we were able to consistently deploy Kubernetes and TF together with the ability to launch workloads.
+
+---
+
+## Now the interesting stuff
+
+So now that we can spin up K8s and TF together, we want to deploy two distinct stacks in two different public clouds.
+
+The goal of this is to be able to enable pods in a namespace in one K8s deployment to be able to communicate with a service in a namespace in a different K8s deployment.
+
+<div class="center-text"><img src="./img/k8s_tf_multicloud.png"></div>
