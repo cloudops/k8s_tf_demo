@@ -68,6 +68,16 @@ At this point, we were able to consistently deploy Kubernetes and TF together wi
 
 So now that we can spin up K8s and TF together, we want to deploy two distinct stacks in two different public clouds.
 
-The goal of this is to be able to enable pods in a namespace in one K8s deployment to be able to communicate with a service in a namespace in a different K8s deployment.
+The goal of this is to be able to enable pods in a namespace in one K8s deployment to be able to communicate with a service in a namespace in a K8s deployment in a different cloud.
 
-<div class="center-text"><img src="./img/k8s_tf_multicloud.png"></div>
+<div class="center-text"><img src="./img/k8s_tf_multicloud1.png"></div>
+
+---
+
+## Bridging the gap
+
+An interesting thing about Tungsten Fabric is that it is a BGP speaker and is able to communicate with other BGP speakers.
+
+Basically, if you have connectivity between two sites in the underlay network, such as a direct connect or a Site-to-Site VPN connection, Tungsten Fabric can route between them.
+
+<div class="center-text"><img src="./img/k8s_tf_multicloud2.png"></div>
