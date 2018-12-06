@@ -21,11 +21,18 @@ then
       exit 1
 fi
 
+BUILD_TAG="latest"
+if [ -n "$3" ]
+then
+      BUILD_TAG="$3"
+fi
+
 swapoff -a
 sudo setenforce 0
 sudo sed -i 's/^SELINUX=.*/SELINUX=disabled/g' /etc/selinux/config
 
-sudo yum install -y docker
+#sudo yum install -y docker
+sudo yum install -y docker-1.13.1-75.git8633870.el7.centos
 sudo systemctl enable docker.service
 sudo service docker start
 
@@ -66,6 +73,9 @@ sudo chown $USER:$USER $HOME/.kube/config
 K8S_MASTER_IP=$1 
 sudo mkdir -pm 777 /var/lib/contrail/kafka-logs
 curl https://github.com/Juniper/contrail-controller/wiki/contrail.yml | awk '/<pre><code>/{flag=1;next}/<\/pre>/{flag=0}flag' | sed "s/{{ K8S_MASTER_IP }}/$K8S_MASTER_IP/g" >> tf.yaml
-sed -i "s/VROUTER_GATEWAY: $1/VROUTER_GATEWAY: $2/g" tf.yaml
 
-kubectl apply -f tf.yaml
+# change the `VROUTER_GATEWAY` to the underly gateway or network connectivity to the master will be lost
+sed -i "s/VROUTER_GATEWAY: $1/VROUTER_GATEWAY: $2/g" tf.yaml
+sed -i "s/:latest/:$BUILD_TAG/g" tf.yaml
+
+#kubectl apply -f tf.yaml
