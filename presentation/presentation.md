@@ -103,16 +103,15 @@ Basically, if you have connectivity between two sites in the underlay network, s
 By default, if we spin up both sites the same way, they will have overlapping IP ranges for the `pod`, `service` and `ip-fabric` IPAM ranges.
 
 In attempting to modify the default ranges, we discovered that passing the `--pod-network-cidr` and `--service-cidr` flags to the `kubeadm init` command has mixed results.
-
-The `--service-cidr` flag correctly configures Kubernetes, but the configuration is not propagated to Tungsten Fabric.<br /> *Requires manual intervention...*
-
-The `--pod-network-cidr` flag correctly sets the Kubernetes config, but it seems to have no effect on what is provisioned.<br /> *Requires manual intervention...*
+<br /><br />
+- The `--service-cidr` flag correctly configures Kubernetes, but the configuration is not propagated to Tungsten Fabric.<br /> *Requires manual intervention...*
+- The `--pod-network-cidr` flag correctly sets the Kubernetes config, but it seems to have no effect on what is provisioned.<br /> *Requires manual intervention...*
 
 ---
 
 ## Tungsten Fabric w/ custom IP ranges?
 
-Lets modify the `kube-manager-config` ConfigMap to pass non-overlapping IP ranges to TF.
+Lets modify the `kube-manager-config` ConfigMap to pass non-overlapping IP ranges to Tungsten Fabric.
 
 ```
 apiVersion: v1
@@ -124,6 +123,7 @@ data:
   KUBERNETES_API_SERVER: {{ K8S_MASTER_IP }}
   KUBERNETES_API_SECURE_PORT: "6443"
   K8S_TOKEN_FILE: "/tmp/serviceaccount/token"
+  # --- additional config below --- #
   KUBERNETES_POD_SUBNETS: 10.48.0.0/12
   KUBERNETES_SERVICE_SUBNETS: 10.112.0.0/12
   KUBERNETES_IP_FABRIC_SUBNETS: 10.80.0.0/12
@@ -139,7 +139,7 @@ data:
 
 ## Periodically we have problems
 
-Even though all the containers are up and running, sometimes the network does not come up.
+Even though all the containers are up and running, sometimes the network does not come up.  I believe this is due to a race condition.
 
 Checking the `contrail-status`:
 
@@ -183,3 +183,19 @@ $ kubectl delete pod contrail-controller-control-<hash> -n kube-system
 <!-- .slide: class="center" -->
 
 <div class="center-text"><img src="./img/questions.png"/></div>
+
+---
+
+<!-- .slide: class="center" -->
+
+# Thank You
+<br />
+### Will Stevens
+**CTO @ CloudOps**  
+[https://github.com/swill](https://github.com/swill)
+<br /><br />
+### Syed Ahmed
+**Cloud Software Architect @ CloudOps**  
+[https://github.com/syed](https://github.com/syed)
+<br /><br />
+*Special thanks to Olivier Pilotte (Cloud Solutions Architect @ CloudOps) [https://github.com/olivierpilotte](https://github.com/olivierpilotte)*
