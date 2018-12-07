@@ -70,7 +70,8 @@ echo "source <(kubectl completion bash)" >> $HOME/.bashrc
 
 sleep 60
 
-sudo kubeadm init --apiserver-cert-extra-sans $1 >> $HOME/kubeadm_init.log
+#sudo kubeadm init --apiserver-cert-extra-sans $1 >> $HOME/kubeadm_init.log
+sudo kubeadm init --apiserver-cert-extra-sans $1 --pod-network-cidr "10.48.0.0/12" --service-cidr "10.112.0.0/12" >> $HOME/kubeadm_init.log
 
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
@@ -84,4 +85,4 @@ curl https://github.com/Juniper/contrail-controller/wiki/contrail.yml | awk '/<p
 sed -i "s/VROUTER_GATEWAY: $1/VROUTER_GATEWAY: $2/g" tf.yaml
 sed -i "s/:latest/:$BUILD_TAG/g" tf.yaml
 
-kubectl apply -f tf.yaml
+#kubectl apply -f tf.yaml

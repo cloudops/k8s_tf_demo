@@ -112,9 +112,22 @@ The `--pod-network-cidr` flag correctly sets the Kubernetes config, but it seems
 
 ## Tungsten Fabric w/ custom IP ranges?
 
-Initial testing of passing in what I expected to be the correct configuration to the `kube-manager-config` ConfigMap did not work.  Admittedly, I did not find documentation on this, so I was guessing...
+Lets modify the `kube-manager-config` ConfigMap to pass non-overlapping IP ranges to TF.
 
-I expect that having overlapping IP space in the two TF deployments will be a problem, but lets proceed anyway and see if it is a problem.
+```
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kube-manager-config
+  namespace: kube-system
+data:
+  KUBERNETES_API_SERVER: {{ K8S_MASTER_IP }}
+  KUBERNETES_API_SECURE_PORT: "6443"
+  K8S_TOKEN_FILE: "/tmp/serviceaccount/token"
+  KUBERNETES_POD_SUBNETS: 10.48.0.0/12
+  KUBERNETES_SERVICE_SUBNETS: 10.112.0.0/12
+  KUBERNETES_IP_FABRIC_SUBNETS: 10.80.0.0/12
+```
 
 ---
 
@@ -148,3 +161,25 @@ Fix by running:
 ```bash
 $ kubectl delete pod contrail-controller-control-<hash> -n kube-system
 ```
+
+---
+
+<!-- .slide: class="dark center" -->
+
+<img class="right-45" src="./img/success.png" style="margin-top:-5em;" />
+
+# Are the demo gods smiling?
+
+---
+
+<!-- .slide: class="dark" -->
+
+# And now...
+
+<div class="center-text"><img src="./img/where_now.jpeg" style="width:65%" /></div>
+
+---
+
+<!-- .slide: class="center" -->
+
+<div class="center-text"><img src="./img/questions.png"/></div>
