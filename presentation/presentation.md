@@ -2,7 +2,7 @@
 
 # Multi-Cloud Network Segmentation with Kubernetes and TF
 
-### Will Stevens & Syed Ahmed
+### Will Stevens&nbsp;&nbsp;&&nbsp;&nbsp;Syed Ahmed
 
 December 10th, 2018
 
