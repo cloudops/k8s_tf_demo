@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: echoheaders-rmt
+  labels:
+    app: echoheaders-rmt
+spec:
+  type: ClusterIP
+  ports:
+  - port: 80
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  selector:
+    app: echoheaders-rmt
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: echoheaders-rmt
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: echoheaders-rmt
+    spec:
+      containers:
+      - name: echoheaders-rmt
+        image: k8s.gcr.io/echoserver:1.4
+        ports:
+        - containerPort: 8080

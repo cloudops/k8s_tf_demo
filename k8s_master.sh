@@ -42,14 +42,20 @@ gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg
         https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
 
-sudo yum update -y
+## just in case your template is ancient
+#sudo yum update -y
+
+sudo yum install -y ntp ntpdate
+sudo ntpdate pool.ntp.org
+sudo systemctl enable ntpd && sudo systemctl start ntpd
 
 sudo yum install -y docker-1.13.1-75.git8633870.el7.centos
 sudo systemctl enable docker.service
 sudo service docker start
 
-sudo yum install -y kubelet-1.10.4-0 kubeadm-1.10.4-0 kubectl-1.10.4-0
+sudo yum install -y kubelet-1.10.11-0 kubeadm-1.10.11-0 kubectl-1.10.11-0
 
+# disable the default CNI
 sudo sed -i 's|Environment="KUBELET_NETWORK_ARGS=--network-plugin=cni --cni-conf-dir=/etc/cni/net.d --cni-bin-dir=/opt/cni/bin"|#Environment="KUBELET_NETWORK_ARGS=--network-plugin=cni --cni-conf-dir=/etc/cni/net.d --cni-bin-dir=/opt/cni/bin"|g' /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 sudo systemctl daemon-reload
 sudo service kubelet restart
@@ -78,4 +84,4 @@ curl https://github.com/Juniper/contrail-controller/wiki/contrail.yml | awk '/<p
 sed -i "s/VROUTER_GATEWAY: $1/VROUTER_GATEWAY: $2/g" tf.yaml
 sed -i "s/:latest/:$BUILD_TAG/g" tf.yaml
 
-#kubectl apply -f tf.yaml
+kubectl apply -f tf.yaml
