@@ -202,9 +202,9 @@ Recently the **Tungsten Fabric Architecture** documentation has been updated and
 
 It is extremely detailed and will help you orient if you run into problems.
 <br /><br />
-<div class="center-text"><a href="https://tungstenfabric.github.io/website/Tungsten-Fabric-Architecture.html" target="_blank" style="font-size:200%;">Tungsten Fabric Architecture</a></div>
+<div class="center-text"><a href="https://tungstenfabric.github.io/website/Tungsten-Fabric-Architecture.html" target="_blank" style="font-size:200%;">Tungsten Fabric Architecture</a>
 <br /><br />
-*Special thanks to **Stuart Mackie** for the effort he put into this.*
+*Special thanks to **Stuart Mackie** for the effort he put into this.*</div>
 
 ---
 
@@ -232,4 +232,8 @@ It is extremely detailed and will help you orient if you run into problems.
 
 <!-- .slide: class="center" -->
 
+Get started on your own
 <div class="center-text"><a href="https://github.com/cloudops/k8s_tf_demo" target="_blank" style="font-size:200%;">github.com/cloudops/k8s_tf_demo</a></div>
+<br /><br /><br />
+Infrastructure compliments of
+<img src="./img/cloudca.png">
