@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# worker node on centos 7.4
+## worker node on centos 7.4
 
 ## SPECS
 # CentOS 7.4
@@ -8,7 +8,6 @@
 # CPU: 8 vCPU
 # RAM: 16GB
 # Root Drive: 40GB
-
 
 swapoff -a
 sudo setenforce 0

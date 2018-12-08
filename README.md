@@ -1,7 +1,5 @@
 # Functional K8s + TF config
 
-Note the resource requirements in the respective files `k8s_master.sh` and `k8s_worker.sh`.
-
 ## `k8s_master.sh`
 
 Create a VM with the following specs.  TF will not run with less resources than this, so don't try to skimp.
@@ -17,8 +15,9 @@ Create a VM with the following specs.  TF will not run with less resources than 
 SCP the `k8s_master.sh` file to the master node and run the following:
 
 ```bash
-./k8s_master.sh <master_ip> <underlay_gateway_ip>
+./k8s_master.sh <master_ip> <underlay_gateway_ip> [<tf_version>]
 ```
+*The default <tf_version> is `latest`, other versions can be found at https://hub.docker.com/r/opencontrailnightly/contrail-vrouter-agent/tags/ (for example)*
 
 Wait for the services to come up.  You can check the status of the respective elements with:
 
@@ -37,7 +36,7 @@ Once the pods are all up, note the `kubeadm join` command from the `$HOME/kubead
 
 ## `k8s_worker.sh`
 
-Create a couple VMs with the following specs.  Expect to have to troubleshoot if you use resources than specified.
+Create a couple VMs with the following specs.  Expect to have to troubleshoot if you use less resources than specified.
 
 ```bash
 # CentOS 7.4
