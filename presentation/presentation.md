@@ -48,13 +48,13 @@ Leveraging Tungsten Fabric as a CNI for Kubernetes is a powerful combination, en
 
 ## Let the journey begin...
 
-It turns out that getting Kubernetes and Tungsten Fabric to work together is not trivial, so we wanted to give a little summary of our findings.
+It turns out that getting Kubernetes and Tungsten Fabric to work together is non-trivial, so we wanted to give a little summary of our findings.
 
 The [Deploy Tungsten Fabric on Kubernetes in 1-step command](https://github.com/tungstenfabric/website/blob/master/Tungsten-Fabric-one-line-install-on-k8s.md) tutorial is very useful, but we still ran into these issues.
 
 - We needed the kernel version `3.10.0-862.14.4` instead of `3.10.0-862.3.2`.
 - We needed 32GB of RAM and 50GB of disk on the Kubernetes master to have enough resources.
-- The *Deploy in 1-step* guide rendered on the website strips out the `sed` variable `{{ K8S_MASTER_IP }}`.
+- The version of the *Deploy in 1-step* guide which is rendered on the website strips out the `sed` variable `{{ K8S_MASTER_IP }}`.
 
 After we are back from KubeCon, I will open a PR to improve the documentation in these areas.
 
@@ -62,13 +62,13 @@ After we are back from KubeCon, I will open a PR to improve the documentation in
 
 ## The journey continues...
 
-We also ran into these challenges when deploying Kubernetes and TF together:
+We also ran into these challenges when deploying Kubernetes and Tungsten Fabric together:
 
 - We needed to change the `VROUTER_GATEWAY` variable in the helm chart to be the gateway of the underlay network and not the master IP (which is what is documented), otherwise when TF came up, we would lose network access to the master node.
 - We needed to pin the Kubernetes version to `1.10.11`, as version `1.12` does not seem to be supported yet.
 - We needed to pin a specific version of `docker` to use in order for everything to come up correctly.
 
-At this point, we were able to consistently deploy Kubernetes and TF together with the ability to launch workloads.
+At this point, we were able to consistently deploy Kubernetes and Tungsten Fabric together with the ability to launch workloads.
 
 ---
 
@@ -104,14 +104,14 @@ By default, if we spin up both sites the same way, they will have overlapping IP
 
 In attempting to modify the default ranges, we discovered that passing the `--pod-network-cidr` and `--service-cidr` flags to the `kubeadm init` command has mixed results.
 <br /><br />
-- The `--service-cidr` flag correctly configures Kubernetes, but the configuration is not propagated to Tungsten Fabric.<br /> *Requires manual intervention...*
-- The `--pod-network-cidr` flag correctly sets the Kubernetes config, but it seems to have no effect on what is provisioned.<br /> *Requires manual intervention...*
+- The `--service-cidr` flag correctly configures Kubernetes, but the configuration is not propagated to Tungsten Fabric.<br /><br />
+- The `--pod-network-cidr` flag correctly sets the Kubernetes config, but it seems to have no effect on what is provisioned.
 
 ---
 
 ## Tungsten Fabric w/ custom IP ranges?
 
-Lets modify the `kube-manager-config` ConfigMap to pass non-overlapping IP ranges to Tungsten Fabric.
+Lets modify the `kube-manager-config` ConfigMap to pass non-overlapping IP ranges to TF so the configuration defined in Kubernetes and Tungsten Fabric match.
 
 ```
 apiVersion: v1
@@ -157,7 +157,7 @@ nodemgr: active
 agent: initializing (XMPP:control-node:10.177.192.154 connection down, No Configuration for self)
 ```
 
-Fix by running:
+Delete the following pod so it is recreated:
 ```bash
 $ kubectl delete pod contrail-controller-control-<hash> -n kube-system
 ```
@@ -177,6 +177,34 @@ $ kubectl delete pod contrail-controller-control-<hash> -n kube-system
 # And now...
 
 <div class="center-text"><img src="./img/where_now.jpeg" style="width:65%" /></div>
+
+---
+
+## Network Segmentation
+
+Right now, the networks are basically open to each other.  We have not specified any policies to lock down communication between the different networks.
+
+Review the table below to understand the different options available.  Additional detail can be found [in the architecture doc](https://tungstenfabric.github.io/website/Tungsten-Fabric-Architecture.html#tf-kubernetes).
+
+| Networking Mode | Network Policy | Effect |
+| --- | --- | --- |
+| Kubernetes default | Any-to-any, no tenant isolation | Any container can talk to any other container or service |
+| Namespace isolation | Kubernetes namespaces map to projects in Tungsten Fabric | Containers within a namespace can communicate with each other |
+| Service isolation | Each pod is in its own virtual network and security policy is applied so that only the service IP address is accessible from outside the pod | Communication within a pod is enabled, but only the service IP address is accessible from outside a pod |
+| Container isolation | Zero-trust between containers in the same pod. | Only specifically allowed communications between containers are enabled, even within a pod. Only specific pod to specific services may be enabled. |
+<!-- .element: style="font-size:60%;" -->
+
+---
+
+## Required Reading
+
+Recently the **Tungsten Fabric Architecture** documentation has been updated and it is a must read if you will be working with Tungsten Fabric.
+
+It is extremely detailed and will help you orient if you run into problems.
+<br /><br />
+<div class="center-text"><a href="https://tungstenfabric.github.io/website/Tungsten-Fabric-Architecture.html" target="_blank" style="font-size:200%;">Tungsten Fabric Architecture</a></div>
+<br /><br />
+*Special thanks to **Stuart Mackie** for the effort he put into this.*
 
 ---
 
