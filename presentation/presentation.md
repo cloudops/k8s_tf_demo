@@ -166,9 +166,9 @@ $ kubectl delete pod contrail-controller-control-<hash> -n kube-system
 
 <!-- .slide: class="dark center" -->
 
-<img class="right-45" src="./img/success.png" style="margin-top:-5em;" />
+<img class="right-45" src="./img/success.png" style="margin-top:-2em;" />
 
-# Are the demo gods smiling?
+# Are the demo gods smiling?<!-- .element: style="margin-top:2em;" -->
 
 ---
 
@@ -227,3 +227,9 @@ It is extremely detailed and will help you orient if you run into problems.
 [https://github.com/syed](https://github.com/syed)
 <br /><br />
 *Special thanks to Olivier Pilotte (Cloud Solutions Architect @ CloudOps) [https://github.com/olivierpilotte](https://github.com/olivierpilotte)*
+
+---
+
+<!-- .slide: class="center" -->
+
+<div class="center-text"><a href="https://github.com/cloudops/k8s_tf_demo" target="_blank" style="font-size:200%;">github.com/cloudops/k8s_tf_demo</a></div>
